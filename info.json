@@ -1,10 +1,1 @@
 
-{
-    "author" : ["Serg"],
-    "install_msg" : "Installed.",
-    "name" : "Pete Does Prediction League.",
-    "short" : "See name",
-    "requirements" : ["numpy"],
-    "description" : "See name",
-    "tags" : ["test"]
-}
