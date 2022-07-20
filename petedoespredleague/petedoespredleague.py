@@ -35,8 +35,8 @@ class petedoespredleague(commands.Cog):
     @commands.command()
     async def predict(self, ctx, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11):
         pl = [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11]
-        cityr = numpy.random.triangular(1,2,5)
-        oppr = numpy.random.triangular(0,1,3)
+        cityr = int(numpy.random.triangular(1,3,6))
+        oppr = int(numpy.random.triangular(0,2,4))
         fgs = random.choice(pl+["None"])
         motm = random.choice(pl)
         if cityr>oppr:
