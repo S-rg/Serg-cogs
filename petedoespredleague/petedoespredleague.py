@@ -52,8 +52,8 @@ class petedoespredleague(commands.Cog):
         await ctx.send(f"City {res} {str(cityr)}-{str(oppr)}, fgs {fgs} {min}' motm {motm}")
         try:
             await ctx.message.delete()
-        #except discord.errors.Forbidden:
-            #try:
-                #await ctx.send(_("Not enough permissions to delete messages."), delete_after=2)
-            #except discord.errors.Forbidden:
-                #await author.send(_("Not enough permissions to delete messages."), delete_after=15)
+        except discord.errors.Forbidden:
+            try:
+                await ctx.send(_("Not enough permissions to delete messages."), delete_after=2)
+            except discord.errors.Forbidden:
+                await author.send(_("Not enough permissions to delete messages."), delete_after=15)
