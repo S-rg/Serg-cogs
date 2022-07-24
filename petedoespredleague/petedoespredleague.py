@@ -50,3 +50,30 @@ class petedoespredleague(commands.Cog):
         if motm.isnumeric():
             motm = shirtnums[int(motm)]
         await ctx.send(f"City {res} {str(cityr)}-{str(oppr)}, fgs {fgs} {min}' motm {motm}")
+
+    @checks.admin_or_permissions(manage_channels=True)
+    @commands.command()
+    async def predictscore(self, ctx):
+        cityr = random.randint(1,5)
+        oppr = random.randint(0,3)
+        if cityr>oppr:
+            res = "win"
+        elif cityr<oppr:
+            res = "lose"
+        else:
+            res = "draw"
+        await ctx.send(f"City {res} {str(cityr)}-{str(oppr)}")
+
+    @checks.admin_or_permissions(manage_channels=True)
+    @commands.command()
+    async def predictscorefgm(self, ctx):
+        cityr = random.randint(1,5)
+        oppr = random.randint(0,3)
+        min = random.randint(1,45)
+        if cityr>oppr:
+            res = "win"
+        elif cityr<oppr:
+            res = "lose"
+        else:
+            res = "draw"
+        await ctx.send(f"City {res} {str(cityr)}-{str(oppr)}, FGM: {min}'")
