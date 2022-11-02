@@ -23,7 +23,8 @@ shirtnums = {
     80:"Palmer",
     9:"Haaland",
     19:"Julian Alvarez",
-    26:"Mahrez"
+    26:"Mahrez",
+    82:"Rico Lewis"
     }
 
 class petedoespredleague(commands.Cog):
