@@ -6,12 +6,28 @@ from bs4.element import Tag
 import pandas as pd
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
+from redbot.core import Config
 
 
 class Fantasy(commands.Cog):
 
     def __init__(self, bot):
+        self.config = Config.get_conf(self, identifier=93209320, force_registration=True)
         self.bot = bot
+
+        self.config.register_user(
+            att = ['None', 'None', 'None'],
+            mid = ['None', 'None', 'None'],
+            dfn = ['None', 'None', 'None', 'None'],
+            gk = ['None'],
+            bench = ['None','None','None','None','None'],
+            swaps = 50,
+            bal = 100,
+            powerUpsLeft = ['TC'],
+            powerUpsCurrent = []
+        )
+
+        self.config.register_global()
 
 
     def getGameDataframes(url):
@@ -151,5 +167,8 @@ class Fantasy(commands.Cog):
 
 
     @commands.command()
-    async def mycom(self,ctx):
-        await ctx.send("Hello ")
+    async def getPlayers(self, ctx):
+        att = await self.config.user(ctx.author).att
+        mid = await self.config.user(ctx.author).mid
+        dfn = await self.config.user(ctx.author).dfn
+        return await ctx.send(att + mid + dfn)
