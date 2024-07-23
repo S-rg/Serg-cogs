@@ -8,7 +8,7 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8')
 
 
-class MyCog(commands.Cog):
+class Fantasy(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
