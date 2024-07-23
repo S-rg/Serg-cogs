@@ -168,7 +168,7 @@ class Fantasy(commands.Cog):
 
     @commands.command()
     async def getPlayers(self, ctx):
-        att = await self.config.user(ctx.author).get_raw(att)
-        mid = await self.config.user(ctx.author).get_raw(mid)
-        dfn = await self.config.user(ctx.author).get_raw(dfn)
+        att = await self.config.user(ctx.author).get_raw('att')
+        mid = await self.config.user(ctx.author).get_raw('mid')
+        dfn = await self.config.user(ctx.author).get_raw('dfn')
         return await ctx.send(att + mid + dfn)
