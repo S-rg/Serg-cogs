@@ -1,6 +1,6 @@
 {
     "author" : ["Serg"],
     "name": "fantasy-premier-league",
-    "short" : "A cog designed for the Manchester City server, for fantasy football".
+    "short" : "A cog designed for the Manchester City server, for fantasy football",
     "requirements" : ["json", "requests", "bs4", "pandas", "sys"]
 }
