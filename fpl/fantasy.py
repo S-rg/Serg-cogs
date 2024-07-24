@@ -188,7 +188,7 @@ class Fantasy(commands.Cog):
         embed.add_field(name="**Defenders**", value='\n'.join(dfn), inline=False)
         embed.add_field(name="**Goalkeeper**", value='\n'.join(gk), inline=False)
 
-        return ctx.send(embed = embed)
+        return await ctx.send(embed = embed)
     
     @commands.command()
     async def swap(self, ctx):
