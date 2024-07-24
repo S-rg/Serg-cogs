@@ -8,6 +8,7 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from redbot.core import Config
 from redbot.core.utils.chat_formatting import box
+import discord
 
 
 class Fantasy(commands.Cog):
@@ -26,7 +27,8 @@ class Fantasy(commands.Cog):
             bal = 100,
             powerUpsLeft = ['TC'],
             powerUpsCurrent = [],
-            points = 0
+            points = 0,
+            teamname = "Unnamed Team"
         )
 
         self.config.register_global()
@@ -174,12 +176,17 @@ class Fantasy(commands.Cog):
         mid = await self.config.user(ctx.author).get_raw('mid')
         dfn = await self.config.user(ctx.author).get_raw('dfn')
         gk = await self.config.user(ctx.author).get_raw('gk')
-        result = ""
-        result += ''.join([i + '\n' for i in att])
-        result += ''.join([i + '\n' for i in mid])
-        result += ''.join([i + '\n' for i in dfn])
-        result += ''.join([i + '\n' for i in gk])
-        return await ctx.send(box(result))
+
+        embed = discord.Embed(
+            title = await self.config.user(ctx.author).get_raw('teamname'),
+            description = "",
+            color = discord.Color.blue()
+        )
+
+        embed.add_field(name="**Attackers**", value='\n'.join(att), inline=False)
+        embed.add_field(name="**Midfielders**", value='\n'.join(mid), inline=False)
+        embed.add_field(name="**Defenders**", value='\n'.join(dfn), inline=False)
+        embed.add_field(name="**Goalkeeper**", value='\n'.join(gk), inline=False)
     
     @commands.command()
     async def swap(self, ctx):
