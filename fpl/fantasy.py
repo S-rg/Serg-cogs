@@ -174,11 +174,11 @@ class Fantasy(commands.Cog):
         mid = await self.config.user(ctx.author).get_raw('mid')
         dfn = await self.config.user(ctx.author).get_raw('dfn')
         gk = await self.config.user(ctx.author).get_raw('gk')
-        str = ""
-        str += [(i+'\n') for i in att]
-        str += [(i+'\n') for i in mid]
-        str += [(i+'\n') for i in dfn]
-        str += [(i+'\n') for i in gk]
+        result = ""
+        result += ''.join([i + '\n' for i in att])
+        result += ''.join([i + '\n' for i in mid])
+        result += ''.join([i + '\n' for i in dfn])
+        result += ''.join([i + '\n' for i in gk])
         return await ctx.send(box())
     
     @commands.command()
