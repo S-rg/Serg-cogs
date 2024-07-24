@@ -179,7 +179,7 @@ class Fantasy(commands.Cog):
         result += ''.join([i + '\n' for i in mid])
         result += ''.join([i + '\n' for i in dfn])
         result += ''.join([i + '\n' for i in gk])
-        return await ctx.send(box())
+        return await ctx.send(box(result))
     
     @commands.command()
     async def swap(self, ctx):
