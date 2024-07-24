@@ -7,6 +7,7 @@ import pandas as pd
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from redbot.core import Config
+from redbot.core.utils.chat_formatting import box
 
 
 class Fantasy(commands.Cog):
@@ -24,7 +25,8 @@ class Fantasy(commands.Cog):
             swaps = 50,
             bal = 100,
             powerUpsLeft = ['TC'],
-            powerUpsCurrent = []
+            powerUpsCurrent = [],
+            points = 0
         )
 
         self.config.register_global()
@@ -167,8 +169,18 @@ class Fantasy(commands.Cog):
 
 
     @commands.command()
-    async def getPlayers(self, ctx):
+    async def team(self, ctx):
         att = await self.config.user(ctx.author).get_raw('att')
         mid = await self.config.user(ctx.author).get_raw('mid')
         dfn = await self.config.user(ctx.author).get_raw('dfn')
-        return await ctx.send(att + mid + dfn)
+        gk = await self.config.user(ctx.author).get_raw('gk')
+        str = ""
+        str += [(i+'\n') for i in att]
+        str += [(i+'\n') for i in mid]
+        str += [(i+'\n') for i in dfn]
+        str += [(i+'\n') for i in gk]
+        return await ctx.send(box())
+    
+    @commands.command()
+    async def swap(self, ctx):
+        return
