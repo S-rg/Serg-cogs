@@ -206,19 +206,32 @@ class Fantasy(commands.Cog):
     async def swap(self, ctx):
 
         embed = discord.Embed(
-            title="Dropdown Example",
-            description="Please choose an option from the dropdown below:",
+            title="Select the player from your team to be swapped out",
             color=discord.Color.blue()
         )
 
-        # Define the options for the dropdown menu
-        options = [
-            discord.SelectOption(label="Option 1", description="This is the first option", emoji="👍"),
-            discord.SelectOption(label="Option 2", description="This is the second option", emoji="👌"),
-            discord.SelectOption(label="Option 3", description="This is the third option", emoji="🙌"),
-        ]
+        att = await self.config.user(ctx.author).get_raw('att')
+        mid = await self.config.user(ctx.author).get_raw('mid')
+        dfn = await self.config.user(ctx.author).get_raw('dfn')
+        gk = await self.config.user(ctx.author).get_raw('gk')
+        bench = await self.config.user(ctx.author).get_raw('bench')
+        options = []
 
-        # Define the select menu
+        for i in (att + mid + dfn + gk + bench):
+            if i == "None":
+                options.append(discord.SelectOption(
+                    label = "Add Player",
+                    description = "Add a player",
+                    value = i
+                ))
+            player = self.getPlayerData(att)
+            options.append(discord.SelectOption(
+                label = player['d_name'] if player['d_name'] != "" else i,
+                description = (player['pos'].upper() + " - " + player['club'].upper() + " - " + player['price'] + "m"),
+                value = i
+            ))
+        
+
         select = Select(
             placeholder="Choose an option...",
             min_values=1,
@@ -229,10 +242,8 @@ class Fantasy(commands.Cog):
         async def select_callback(interaction: discord.Interaction):
             await interaction.response.send_message(f'You selected: {select.values[0]}', ephemeral=True)
 
-        # Set the callback to the select menu
         select.callback = select_callback
 
-        # Create a view and add the select menu to it
         view = View()
         view.add_item(select)
         
