@@ -164,13 +164,24 @@ class Fantasy(commands.Cog):
         + (0 if vals['sot'] < 2 else 2 if vals['sot'] == 2 else 3)
 
         return points
+    
+    def getPlayerData(name):
+        with open("data.json") as file:
+            data = json.load(file)
+            if name in data:
+                return data[name]
+            return -1
+
+
 
     def calcPoints(data):
         json.load("players.json")
 
+    @commands.group()
+    async def fpl(self, ctx):
+        return
 
-
-    @commands.command()
+    @fpl.command()
     async def team(self, ctx):
         att = await self.config.user(ctx.author).get_raw('att')
         mid = await self.config.user(ctx.author).get_raw('mid')
@@ -190,6 +201,39 @@ class Fantasy(commands.Cog):
 
         return await ctx.send(embed = embed)
     
-    @commands.command()
+    @fpl.command()
     async def swap(self, ctx):
-        return
+
+        embed = discord.Embed(
+            title="Dropdown Example",
+            description="Please choose an option from the dropdown below:",
+            color=discord.Color.blue()
+        )
+
+        # Define the options for the dropdown menu
+        options = [
+            discord.SelectOption(label="Option 1", description="This is the first option", emoji="👍"),
+            discord.SelectOption(label="Option 2", description="This is the second option", emoji="👌"),
+            discord.SelectOption(label="Option 3", description="This is the third option", emoji="🙌"),
+        ]
+
+        # Define the select menu
+        select = discord.Select(
+            placeholder="Choose an option...",
+            min_values=1,
+            max_values=1,
+            options=options
+        )
+
+        async def select_callback(interaction: discord.Interaction):
+            await interaction.response.send_message(f'You selected: {select.values[0]}', ephemeral=True)
+
+        # Set the callback to the select menu
+        select.callback = select_callback
+
+        # Create a view and add the select menu to it
+        view = discord.View()
+        view.add_item(select)
+        
+        # Send the embed with the dropdown menu
+        await ctx.send(embed=embed, view=view)
