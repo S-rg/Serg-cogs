@@ -218,6 +218,7 @@ class Fantasy(commands.Cog):
         options = []
 
         for i in (att + mid + dfn + gk + bench):
+            await ctx.send(i)
             if i == "None":
                 options.append(discord.SelectOption(
                     label = "Add Player",
