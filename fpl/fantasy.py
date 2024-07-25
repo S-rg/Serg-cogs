@@ -224,7 +224,7 @@ class Fantasy(commands.Cog):
                     description = "Add a player",
                     value = i
                 ))
-            player = self.getPlayerData(att)
+            player = self.getPlayerData(i)
             options.append(discord.SelectOption(
                 label = player['d_name'] if player['d_name'] != "" else i,
                 description = (player['pos'].upper() + " - " + player['club'].upper() + " - " + player['price'] + "m"),
