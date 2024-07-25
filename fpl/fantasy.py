@@ -9,6 +9,8 @@ sys.stdout.reconfigure(encoding='utf-8')
 from redbot.core import Config
 from redbot.core.utils.chat_formatting import box
 import discord
+from discord.ext import commands
+from discord.ui import Select, View
 
 
 class Fantasy(commands.Cog):
@@ -218,7 +220,7 @@ class Fantasy(commands.Cog):
         ]
 
         # Define the select menu
-        select = discord.Select(
+        select = Select(
             placeholder="Choose an option...",
             min_values=1,
             max_values=1,
@@ -232,7 +234,7 @@ class Fantasy(commands.Cog):
         select.callback = select_callback
 
         # Create a view and add the select menu to it
-        view = discord.View()
+        view = View()
         view.add_item(select)
         
         # Send the embed with the dropdown menu
