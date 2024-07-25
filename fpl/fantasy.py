@@ -217,14 +217,15 @@ class Fantasy(commands.Cog):
         bench = await self.config.user(ctx.author).get_raw('bench')
         options = []
 
+        cnt = 0
         for i in (att + mid + dfn + gk + bench):
-            await ctx.send(i)
             if i == "None":
                 options.append(discord.SelectOption(
                     label = "Add Player",
                     description = "Add a player",
-                    value = i
+                    value = i + str(cnt)
                 ))
+                cnt += 1
             else:
                 player = Fantasy.getPlayerData(i)
                 options.append(discord.SelectOption(
@@ -248,6 +249,6 @@ class Fantasy(commands.Cog):
 
         view = View()
         view.add_item(select)
-        
-        # Send the embed with the dropdown menu
         await ctx.send(embed=embed, view=view)
+
+        
