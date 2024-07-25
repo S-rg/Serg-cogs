@@ -9,7 +9,6 @@ sys.stdout.reconfigure(encoding='utf-8')
 from redbot.core import Config
 from redbot.core.utils.chat_formatting import box
 import discord
-from discord.ext import commands
 from discord.ui import Select, View
 
 
