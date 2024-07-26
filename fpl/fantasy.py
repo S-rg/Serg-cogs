@@ -290,11 +290,23 @@ class Fantasy(commands.Cog):
                             edit_list[i] == select3.values[0]
 
                     await self.config.user(ctx.author).set_raw(select1.values[0],value=edit_list)
-                    
-
+                
                 select3.callback = select3_callback
+                select3.callback = select3_callback
+                view = View()
+                view.add_item(select1)
+                view.add_item(select2)
+                view.add_item(select3)
+                await interaction.response.edit_message(view=view)
 
 
             select2.callback = select2_callback
+            view = View()
+            view.add_item(select1)
+            view.add_item(select2)
+            await interaction.response.edit_message(view=view)
 
         select1.callback = select1_callback
+        view = View()
+        view.add_item(select1)
+        await ctx.send(embed=embed, view=view)

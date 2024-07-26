@@ -1,0 +1,44 @@
+{
+    "Erling Haaland": {
+        "d_name": "",
+        "price": 9,
+        "club": "mci",
+        "pos": "att"
+    },
+    "Julian Alvarez": {
+        "d_name": "",
+        "price": 5,
+        "club": "mci",
+        "pos": "att"
+    },
+    "Oscar Bobb": {
+        "d_name": "",
+        "price": 3,
+        "club": "mci",
+        "pos": "mid"
+    },
+    "Rico Lewis": {
+        "d_name": "",
+        "price": 12,
+        "club": "mci",
+        "pos": "dfn"
+    },
+    "Kevin de Bruyne": {
+        "d_name": "",
+        "price": 8.5,
+        "club": "mci",
+        "pos": "mid"
+    },
+    "John Stones": {
+        "d_name": "",
+        "price": 7,
+        "club": "mci",
+        "pos": "dfn"
+    },
+    "Stefan Ortega": {
+        "d_name": "",
+        "price": 3,
+        "club": "mci",
+        "pos": "gk"
+    }
+}
