@@ -232,20 +232,21 @@ class Fantasy(commands.Cog):
         )
 
         async def select1_callback(interaction: discord.Interaction):
+            await interaction.response.defer()  # Acknowledge the interaction immediately
+
             op = await self.config.user(ctx.author).get_raw(select1.values[0])
             options2 = []
 
             for i in range(len(op)):
                 if op[i] == "None":
                     options2.append(discord.SelectOption(label='Empty', value=f'none{i}'))
-
-                player = Fantasy.getPlayerData(op[i])
-
-                options2.append(discord.SelectOption(
-                    label=player['d_name'] if player['d_name'] != "" else op[i],
-                    description=f"{player['pos']} - {player['club']} - {player['price']}M",
-                    value=op[i]
-                ))
+                else:
+                    player = Fantasy.getPlayerData(op[i])
+                    options2.append(discord.SelectOption(
+                        label=player['d_name'] if player['d_name'] != "" else op[i],
+                        description=f"{player['pos']} - {player['club']} - {player['price']}M",
+                        value=op[i]
+                    ))
 
             select2 = Select(
                 placeholder="Select Player",
@@ -255,14 +256,13 @@ class Fantasy(commands.Cog):
             )
 
             async def select2_callback(interaction: discord.Interaction):
-                toFind = ""
-                if select1.values[0] != 'bench':
-                    toFind = select1.values[0]
+                await interaction.response.defer()  # Acknowledge the interaction immediately
+
+                toFind = select1.values[0] if select1.values[0] != 'bench' else ""
 
                 options3 = []
                 with open("players.json") as file:
                     data = json.load(file)
-
                     for player in data:
                         if toFind in player['pos']:
                             options3.append(discord.SelectOption(
@@ -279,9 +279,11 @@ class Fantasy(commands.Cog):
                 )
 
                 async def select3_callback(interaction: discord.Interaction):
+                    await interaction.response.defer()  # Acknowledge the interaction immediately
+
                     selection = Fantasy.getPlayerData(select3.values[0])
                     if selection['price'] > await self.config.user(ctx.author).get_raw('bal'):
-                        await interaction.response.send_message("Player too expensive", ephemeral=True)
+                        await interaction.followup.send("Player too expensive", ephemeral=True)
                         return
 
                     edit_list = await self.config.user(ctx.author).get_raw(select1.values[0])
@@ -290,19 +292,19 @@ class Fantasy(commands.Cog):
                             edit_list[i] = select3.values[0]
 
                     await self.config.user(ctx.author).set_raw(select1.values[0], value=edit_list)
-                    await interaction.response.send_message("Player swapped successfully", ephemeral=True)
+                    await interaction.followup.send("Player swapped successfully", ephemeral=True)
 
                 select3.callback = select3_callback
 
                 view = View()
                 view.add_item(select3)
-                await interaction.response.edit_message(view=view)
+                await interaction.edit_original_response(view=view)
 
             select2.callback = select2_callback
 
             view = View()
             view.add_item(select2)
-            await interaction.response.edit_message(view=view)
+            await interaction.edit_original_response(view=view)
 
         select1.callback = select1_callback
 
