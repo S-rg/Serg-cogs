@@ -212,23 +212,23 @@ class Fantasy(commands.Cog):
     @fpl.command()
     async def swap(self, ctx):
         embed = discord.Embed(
-            title = "Select the what position needs to be swapped",
-            color = discord.Color.blue()
+            title="Select the position to be swapped",
+            color=discord.Color.blue()
         )
 
         options1 = [
-            discord.SelectOption(label = "Attackers", value = 'att'),
-            discord.SelectOption(label = "Midfielders", value = 'mid'),
-            discord.SelectOption(label = "Defenders", value = 'dfn'),
-            discord.SelectOption(label = "Goalkeeper", value = 'gk'),
-            discord.SelectOption(label = "Bench", value = 'bench')
+            discord.SelectOption(label="Attackers", value='att'),
+            discord.SelectOption(label="Midfielders", value='mid'),
+            discord.SelectOption(label="Defenders", value='dfn'),
+            discord.SelectOption(label="Goalkeeper", value='gk'),
+            discord.SelectOption(label="Bench", value='bench')
         ]
 
         select1 = Select(
-            placeholder = "Select Position",
-            min_values = 1,
-            max_values = 1,
-            options = options1
+            placeholder="Select Position",
+            min_values=1,
+            max_values=1,
+            options=options1
         )
 
         async def select1_callback(interaction: discord.Interaction):
@@ -237,28 +237,28 @@ class Fantasy(commands.Cog):
 
             for i in range(len(op)):
                 if op[i] == "None":
-                    options2.append(discord.SelectOption(label='Empty',value='none'+i))
+                    options2.append(discord.SelectOption(label='Empty', value=f'none{i}'))
 
                 player = Fantasy.getPlayerData(op[i])
 
                 options2.append(discord.SelectOption(
-                    label = player['d_name'] if player['d_name'] != "" else op[i],
-                    description = player['pos'] + " - " + player['club'] + " - " + player['price'] + "M",
-                    value = op[i]
+                    label=player['d_name'] if player['d_name'] != "" else op[i],
+                    description=f"{player['pos']} - {player['club']} - {player['price']}M",
+                    value=op[i]
                 ))
 
             select2 = Select(
-                placeholder = "Select Player",
-                min_values = 1,
-                max_values = 1,
-                options = options2
+                placeholder="Select Player",
+                min_values=1,
+                max_values=1,
+                options=options2
             )
 
             async def select2_callback(interaction: discord.Interaction):
                 toFind = ""
                 if select1.values[0] != 'bench':
                     toFind = select1.values[0]
-                
+
                 options3 = []
                 with open("players.json") as file:
                     data = json.load(file)
@@ -266,47 +266,46 @@ class Fantasy(commands.Cog):
                     for player in data:
                         if toFind in player['pos']:
                             options3.append(discord.SelectOption(
-                                label = player['d_name'] if player['d_name'] != "" else op[i],
-                                description = player['pos'] + " - " + player['club'] + " - " + player['price'] + "M",
-                                value = op[i]
+                                label=player['d_name'] if player['d_name'] != "" else player['name'],
+                                description=f"{player['pos']} - {player['club']} - {player['price']}M",
+                                value=player['name']
                             ))
 
                 select3 = Select(
-                    placeholder = "Select Player to Swap With",
-                    min_values = 1,
-                    max_values = 1,
-                    options = options3
+                    placeholder="Select Player to Swap With",
+                    min_values=1,
+                    max_values=1,
+                    options=options3
                 )
 
                 async def select3_callback(interaction: discord.Interaction):
                     selection = Fantasy.getPlayerData(select3.values[0])
                     if selection['price'] > await self.config.user(ctx.author).get_raw('bal'):
-                        await ctx.send("Player too expensive")
+                        await interaction.response.send_message("Player too expensive", ephemeral=True)
                         return
-                    
+
                     edit_list = await self.config.user(ctx.author).get_raw(select1.values[0])
                     for i in range(len(edit_list)):
                         if edit_list[i] == select2.values[0]:
-                            edit_list[i] == select3.values[0]
+                            edit_list[i] = select3.values[0]
 
-                    await self.config.user(ctx.author).set_raw(select1.values[0],value=edit_list)
-                
+                    await self.config.user(ctx.author).set_raw(select1.values[0], value=edit_list)
+                    await interaction.response.send_message("Player swapped successfully", ephemeral=True)
+
                 select3.callback = select3_callback
-                select3.callback = select3_callback
+
                 view = View()
-                view.add_item(select1)
-                view.add_item(select2)
                 view.add_item(select3)
                 await interaction.response.edit_message(view=view)
 
-
             select2.callback = select2_callback
+
             view = View()
-            view.add_item(select1)
             view.add_item(select2)
             await interaction.response.edit_message(view=view)
 
         select1.callback = select1_callback
+
         view = View()
         view.add_item(select1)
         await ctx.send(embed=embed, view=view)
