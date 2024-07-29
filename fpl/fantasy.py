@@ -298,13 +298,13 @@ class Fantasy(commands.Cog):
 
                 view = View()
                 view.add_item(select3)
-                await interaction.edit_original_response(view=view)
+                await interaction.edit_original_response(view=view)  # Update the message with the third dropdown
 
             select2.callback = select2_callback
 
             view = View()
             view.add_item(select2)
-            await interaction.edit_original_response(view=view)
+            await interaction.edit_original_response(view=view)  # Update the message with the second dropdown
 
         select1.callback = select1_callback
 
