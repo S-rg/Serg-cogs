@@ -183,7 +183,6 @@ class Fantasy(commands.Cog):
         return price
 
 
-    
 
     @commands.group()
     async def fpl(self, ctx):
@@ -256,49 +255,7 @@ class Fantasy(commands.Cog):
             )
 
             async def select2_callback(interaction: discord.Interaction):
-                await interaction.response.defer()  # Acknowledge the interaction immediately
-
-                toFind = select1.values[0] if select1.values[0] != 'bench' else ""
-
-                options3 = []
-                with open("players.json") as file:
-                    data = json.load(file)
-                    for player in data:
-                        if toFind in player['pos']:
-                            options3.append(discord.SelectOption(
-                                label=player['d_name'] if player['d_name'] != "" else player['name'],
-                                description=f"{player['pos']} - {player['club']} - {player['price']}M",
-                                value=player['name']
-                            ))
-
-                select3 = Select(
-                    placeholder="Select Player to Swap With",
-                    min_values=1,
-                    max_values=1,
-                    options=options3
-                )
-
-                async def select3_callback(interaction: discord.Interaction):
-                    await interaction.response.defer()  # Acknowledge the interaction immediately
-
-                    selection = Fantasy.getPlayerData(select3.values[0])
-                    if selection['price'] > await self.config.user(ctx.author).get_raw('bal'):
-                        await interaction.followup.send("Player too expensive", ephemeral=True)
-                        return
-
-                    edit_list = await self.config.user(ctx.author).get_raw(select1.values[0])
-                    for i in range(len(edit_list)):
-                        if edit_list[i] == select2.values[0]:
-                            edit_list[i] = select3.values[0]
-
-                    await self.config.user(ctx.author).set_raw(select1.values[0], value=edit_list)
-                    await interaction.followup.send("Player swapped successfully", ephemeral=True)
-
-                select3.callback = select3_callback
-
-                view = View()
-                view.add_item(select3)
-                await interaction.edit_original_response(view=view)  # Update the message with the third dropdown
+                await interaction.response.send_message("test")
 
             select2.callback = select2_callback
 
