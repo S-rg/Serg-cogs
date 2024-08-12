@@ -167,7 +167,7 @@ class Fantasy(commands.Cog):
         return points
     
     def getPlayerData(name):
-        with open("players.json") as file:
+        with open("/data/cogs/CogManager/cogs/fpl/players.json") as file:
             data = json.load(file)
             if name in data:
                 return data[name]
@@ -175,7 +175,7 @@ class Fantasy(commands.Cog):
     
     def getTeamPrice(self, li):
         price = 0
-        with open("players.json") as file:
+        with open("/data/cogs/CogManager/cogs/fpl/players.json") as file:
             data = json.load(file)
             for player in data:
                 if player in li:
@@ -188,7 +188,7 @@ class Fantasy(commands.Cog):
 
         return_list = []
         
-        with open("players.json") as file:
+        with open("/data/cogs/CogManager/cogs/fpl/players.json") as file:
             data = json.load(file)
             for player in data:
                 if pos in player['pos']:
