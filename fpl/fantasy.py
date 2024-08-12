@@ -227,8 +227,6 @@ class Fantasy(commands.Cog):
             color=discord.Color.blue()
         )
 
-        await ctx.send(os.path.dirname(os.path.realpath(__file__)))
-
         att = await self.config.user(ctx.author).get_raw('att')
         mid = await self.config.user(ctx.author).get_raw('mid')
         dfn = await self.config.user(ctx.author).get_raw('dfn')
@@ -242,13 +240,13 @@ class Fantasy(commands.Cog):
             player = Fantasy.getPlayerData(op[i])
             if op[i] == "None":
                 pos = 'att' if i < 3 else 'mid' if i < 6 else 'dfn' if i < 10 else 'gk' if i == 10 else None
-                options1.append(discord.selectOption(
+                options1.append(discord.SelectOption(
                     label = "Empty - Add Player",
                     description = pos,
                     value = pos + i
                 ))
             else:
-                options1.append(discord.selectOption(
+                options1.append(discord.SelectOption(
                     label=player['d_name'] if player['d_name'] != "" else op[i],
                     description=f"{player['pos']} - {player['club']} - {player['price']}M",
                     value = player['pos'] + i
