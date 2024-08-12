@@ -274,6 +274,7 @@ class Fantasy(commands.Cog):
 
         async def select1_callback(interaction: discord.Interaction):
             await interaction.response.defer()
+            await ctx.send("Test")
 
             resp = select1.values[0]
             pos = 'att' if resp[0] == 'a' else 'mid' if resp[0] == 'm' else 'dfn' if resp[0] == 'd' else 'gk' if resp[0] == 'g' else 'bench'
