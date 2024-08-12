@@ -243,25 +243,25 @@ class Fantasy(commands.Cog):
                 options1.append(discord.SelectOption(
                     label = "Empty - Add Player",
                     description = pos,
-                    value = pos + i
+                    value = pos + str(i)
                 ))
             else:
                 options1.append(discord.SelectOption(
                     label=player['d_name'] if player['d_name'] != "" else op[i],
                     description=f"{player['pos']} - {player['club']} - {player['price']}M",
-                    value = player['pos'] + i
+                    value = player['pos'] + str(i)
                 ))
 
-        for i in bench:
-            player = Fantasy.getPlayerData(i)
-            if i == "None":
+        for i in range(len(bench)):
+            player = Fantasy.getPlayerData(bench[i])
+            if bench[i] == "None":
                     options1.append(discord.SelectOption(label='Empty', value=f'none{i}'))
             else:
-                player = Fantasy.getPlayerData(i)
+                player = Fantasy.getPlayerData(bench[i])
                 options1.append(discord.SelectOption(
-                    label=player['d_name'] if player['d_name'] != "" else i,
+                    label=player['d_name'] if player['d_name'] != "" else bench[i],
                     description=f"{player['pos']} - {player['club']} - {player['price']}M - **BENCH**",
-                    value = "bench"+i
+                    value = "bench"+str(i)
                 ))
         
 
