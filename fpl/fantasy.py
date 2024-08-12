@@ -297,6 +297,8 @@ class Fantasy(commands.Cog):
                     description=f"{i[1]['pos']} - {i[1]['club']} - {i[1]['price']}"
                 ))
 
+            await ctx.send(options2)
+
             select2 = Select(
                 placeholder="Select Player",
                 min_values=1,
@@ -305,6 +307,7 @@ class Fantasy(commands.Cog):
             )
 
             async def select2_callback(interaction: discord.Interaction):
+                await ctx.send("Hi")
                 await interaction.response.send_message("test")
 
             select2.callback = select2_callback
