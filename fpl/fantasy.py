@@ -273,30 +273,29 @@ class Fantasy(commands.Cog):
         )
 
         async def select1_callback(interaction: discord.Interaction):
-            await interaction.response.defer()  # Acknowledge the interaction immediately
+            await interaction.response.defer()
 
             resp = select1.values[0]
             pos = 'att' if resp[0] == 'a' else 'mid' if resp[0] == 'm' else 'dfn' if resp[0] == 'd' else 'gk' if resp[0] == 'g' else 'bench'
             index = 0
             if pos == 'att':
-                index = resp[3:]
+                index = int(resp[3:])
             elif pos == 'mid':
-                index = resp[3:] - 3
+                index = int(resp[3:]) - 3
             elif pos == 'dfn':
-                index = resp[3:] - 6
+                index = int(resp[3:]) - 6
             elif pos == 'gk':
-                index = resp[2:] - 10
+                index = int(resp[2:]) - 10
             elif pos == 'bench':
-                index = resp[5:]
+                index = int(resp[5:])
 
             options2 = []
             players = self.getPlayersByPosition(pos)
             for i in players:
                 options2.append(discord.SelectOption(
-                    label = i[1]['d_name'] if i[1]['d_name'] != "" else i[0],
-                    description = f"{i[1]['pos']} - {i[1]['club']} - {i[1]['price']}"
+                    label=i[1]['d_name'] if i[1]['d_name'] != "" else i[0],
+                    description=f"{i[1]['pos']} - {i[1]['club']} - {i[1]['price']}"
                 ))
-            
 
             select2 = Select(
                 placeholder="Select Player",
@@ -312,7 +311,7 @@ class Fantasy(commands.Cog):
 
             view = View()
             view.add_item(select2)
-            await interaction.edit_original_response(view=view)  # Update the message with the second dropdown
+            await interaction.edit_original_response(view=view)
 
         select1.callback = select1_callback
 
