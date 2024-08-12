@@ -10,7 +10,7 @@ from redbot.core import Config
 from redbot.core.utils.chat_formatting import box
 import discord
 from discord.ui import Select, View
-
+import os
 
 class Fantasy(commands.Cog):
 
@@ -226,6 +226,9 @@ class Fantasy(commands.Cog):
             title="Select the position to be swapped",
             color=discord.Color.blue()
         )
+
+        await ctx.send(os.listdir("."))
+        await ctx.send(os.getcwd())
 
         att = await self.config.user(ctx.author).get_raw('att')
         mid = await self.config.user(ctx.author).get_raw('mid')
