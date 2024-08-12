@@ -227,8 +227,7 @@ class Fantasy(commands.Cog):
             color=discord.Color.blue()
         )
 
-        await ctx.send(os.listdir("."))
-        await ctx.send(os.getcwd())
+        await ctx.send(os.path.dirname(os.path.realpath(__file__)))
 
         att = await self.config.user(ctx.author).get_raw('att')
         mid = await self.config.user(ctx.author).get_raw('mid')
