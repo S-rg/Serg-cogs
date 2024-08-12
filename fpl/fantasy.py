@@ -181,8 +181,20 @@ class Fantasy(commands.Cog):
                 if player in li:
                     price += player['price']
         return price
+    
+    def getPlayersByPosition(self, pos):
+        if pos == "bench":
+            pos = ''
 
+        return_list = []
+        
+        with open("players.json") as file:
+            data = json.load(file)
+            for player in data:
+                if pos in player['pos']:
+                    return_list.append([player,data[player]])
 
+        return return_list
 
     @commands.group()
     async def fpl(self, ctx):
@@ -215,13 +227,43 @@ class Fantasy(commands.Cog):
             color=discord.Color.blue()
         )
 
-        options1 = [
-            discord.SelectOption(label="Attackers", value='att'),
-            discord.SelectOption(label="Midfielders", value='mid'),
-            discord.SelectOption(label="Defenders", value='dfn'),
-            discord.SelectOption(label="Goalkeeper", value='gk'),
-            discord.SelectOption(label="Bench", value='bench')
-        ]
+        att = await self.config.user(ctx.author).get_raw('att')
+        mid = await self.config.user(ctx.author).get_raw('mid')
+        dfn = await self.config.user(ctx.author).get_raw('dfn')
+        gk = await self.config.user(ctx.author).get_raw('gk')
+        bench = await self.config.user(ctx.author).get_raw('bench')
+
+        options1 = []
+        op = att + mid + dfn + gk
+
+        for i in range(len(op)):
+            player = Fantasy.getPlayerData(op[i])
+            if op[i] == "None":
+                pos = 'att' if i < 3 else 'mid' if i < 6 else 'dfn' if i < 10 else 'gk' if i == 10 else None
+                options1.append(discord.selectOption(
+                    label = "Empty - Add Player",
+                    description = pos,
+                    value = pos + i
+                ))
+            else:
+                options1.append(discord.selectOption(
+                    label=player['d_name'] if player['d_name'] != "" else op[i],
+                    description=f"{player['pos']} - {player['club']} - {player['price']}M",
+                    value = player['pos'] + i
+                ))
+
+        for i in bench:
+            player = Fantasy.getPlayerData(i)
+            if i == "None":
+                    options1.append(discord.SelectOption(label='Empty', value=f'none{i}'))
+            else:
+                player = Fantasy.getPlayerData(i)
+                options1.append(discord.SelectOption(
+                    label=player['d_name'] if player['d_name'] != "" else i,
+                    description=f"{player['pos']} - {player['club']} - {player['price']}M - **BENCH**",
+                    value = "bench"+i
+                ))
+        
 
         select1 = Select(
             placeholder="Select Position",
@@ -233,19 +275,28 @@ class Fantasy(commands.Cog):
         async def select1_callback(interaction: discord.Interaction):
             await interaction.response.defer()  # Acknowledge the interaction immediately
 
-            op = await self.config.user(ctx.author).get_raw(select1.values[0])
-            options2 = []
+            resp = select1.values[0]
+            pos = 'att' if resp[0] == 'a' else 'mid' if resp[0] == 'm' else 'dfn' if resp[0] == 'd' else 'gk' if resp[0] == 'g' else 'bench'
+            index = 0
+            if pos == 'att':
+                index = resp[3:]
+            elif pos == 'mid':
+                index = resp[3:] - 3
+            elif pos == 'dfn':
+                index = resp[3:] - 6
+            elif pos == 'gk':
+                index = resp[2:] - 10
+            elif pos == 'bench':
+                index = resp[5:]
 
-            for i in range(len(op)):
-                if op[i] == "None":
-                    options2.append(discord.SelectOption(label='Empty', value=f'none{i}'))
-                else:
-                    player = Fantasy.getPlayerData(op[i])
-                    options2.append(discord.SelectOption(
-                        label=player['d_name'] if player['d_name'] != "" else op[i],
-                        description=f"{player['pos']} - {player['club']} - {player['price']}M",
-                        value=op[i]
-                    ))
+            options2 = []
+            players = self.getPlayersByPosition(pos)
+            for i in players:
+                options2.append(discord.SelectOption(
+                    label = i[1]['d_name'] if i[1]['d_name'] != "" else i[0],
+                    description = f"{i[1]['pos']} - {i[1]['club']} - {i[1]['price']}"
+                ))
+            
 
             select2 = Select(
                 placeholder="Select Player",
