@@ -290,6 +290,8 @@ class Fantasy(commands.Cog):
             elif pos == 'bench':
                 index = int(resp[5:])
 
+            await ctx.send("test")
+
             options2 = []
             players = self.getPlayersByPosition(pos)
             for i in players:
