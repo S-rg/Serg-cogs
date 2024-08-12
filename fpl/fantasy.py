@@ -274,7 +274,6 @@ class Fantasy(commands.Cog):
 
         async def select1_callback(interaction: discord.Interaction):
             await interaction.response.defer()
-            await ctx.send("Test")
 
             resp = select1.values[0]
             pos = 'att' if resp[0] == 'a' else 'mid' if resp[0] == 'm' else 'dfn' if resp[0] == 'd' else 'gk' if resp[0] == 'g' else 'bench'
@@ -290,10 +289,10 @@ class Fantasy(commands.Cog):
             elif pos == 'bench':
                 index = int(resp[5:])
 
-            await ctx.send("test")
-
             options2 = []
             players = self.getPlayersByPosition(pos)
+
+            ctx.send("Test")
             for i in players:
                 options2.append(discord.SelectOption(
                     label=i[1]['d_name'] if i[1]['d_name'] != "" else i[0],
