@@ -14,18 +14,17 @@ class PredictionLeague(commands.Cog):
         self.config.register_guild(**default_guild)      
 
     @commands.command()
-    # async def predict(self, ctx, scoreline, fgs, fgm, motm):
-    #     """Command to get prediction from user"""
-    #     guild = self.config.guild(ctx.guild)  
+    async def predict(self, ctx, scoreline, fgs, fgm, motm):
+        """Command to get prediction from user"""
+        # guild = self.config.guild(ctx.guild)  
 
-    #     #preprocess input
-    #     scores = scoreline.split("-")
-    #     fgm = int(fgm.strip("'"))
+        # #preprocess input
+        # scores = scoreline.split("-")
+        # fgm = int(fgm.strip("'"))
 
-    #     #define prediction list 
-    #     """City Score, Opp Score, FGS, FGM, MOTM"""
-    #     prediction = [scores[0], scores[1], fgs, fgm, motm]
-
+        # #define prediction list 
+        # """City Score, Opp Score, FGS, FGM, MOTM"""
+        # prediction = [scores[0], scores[1], fgs, fgm, motm]
 
 
     @checks.admin_or_permissions(manage_channels = True)
