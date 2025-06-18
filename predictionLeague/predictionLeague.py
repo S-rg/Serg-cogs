@@ -99,13 +99,8 @@ class PredictionLeague(commands.Cog):
             await ctx.send(box(str(guild_config)))
 
     @plset.command()
-    async def reset(self, ctx):
+    async def REMOVETHISSERG(self, ctx):
         """Resets the Prediction League Config"""
-        async with self.config.guild(ctx.guild).all() as guild_config:
-            data = json.dumps(guild_config, indent=4)
-            file = BytesIO(data.encode("utf-8"))
-            file.name = "infodump.json"
-            await ctx.send("Here is the current config before reset:", file=discord.File(file))
         await self.config.guild(ctx.guild).clear()
         await self.config.guild(ctx.guild).set({
             "round_num": 0,
