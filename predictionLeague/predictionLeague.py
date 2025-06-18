@@ -35,33 +35,28 @@ class PredictionLeague(commands.Cog):
 
     @plset.command()
     async def show(self,ctx):
+        """Shows the Current Prediction League Settings"""
         round_num = await self.config.guild(ctx.guild).round_num()
         match_num = await self.config.guild(ctx.guild).match_num()
         msg = ""
         msg += "Round Number: {}\n".format(round_num)
         msg += "Match Number: {}\n".format(match_num)
         await ctx.send(box(msg))
-
-    @plset.command()
-    async def season(self, ctx, season : int):
-        """Sets Season"""
-        await self.config.guild(ctx.guild).season_num.set(season)
-        return await ctx.send("The Current Season is Now : {}".format(season))
     
     @plset.command()
-    async def round(self, ctx, round : int):
+    async def setround(self, ctx, round : int):
         """Sets Round"""
         await self.config.guild(ctx.guild).round_num.set(round)
         return await ctx.send("The Current Round is Now : {}".format(round))
 
     @plset.command()
-    async def match(self, ctx, match : int):
+    async def setmatch(self, ctx, match : int):
         """Sets Matchday Number"""
         await self.config.guild(ctx.guild).match_num.set(match)
         return await ctx.send("The Current Match is Now : {}".format(match))
     
     @plset.command()
-    async def advance(self, ctx):
+    async def advancematch(self, ctx):
         """Advances the Current Matchday"""
         async with self.config.guild(ctx.guild).all() as guild_config:
             round_num = guild_config["round_num"]
@@ -96,17 +91,8 @@ class PredictionLeague(commands.Cog):
             }
 
     @plset.command()
-    async def matchinfo(self, ctx, season_num: int = None, round_num: int = None, match_num: int = None):
+    async def debug_infodump(self, ctx):
+        """Dumps the entire config for debugging"""
         async with self.config.guild(ctx.guild).all() as guild_config:
-            if season_num is None:
-                season_num = guild_config['season_num']
-            if round_num is None:
-                round_num = guild_config['round_num']
-            if match_num is None:
-                match_num = guild_config['match_num']
-            match_key = (season_num, round_num, match_num)
+            await ctx.send(box(str(guild_config)))
 
-            if match_key in guild_config['matches']:
-                await ctx.send('yep')
-            else:
-                await ctx.send('nope')
