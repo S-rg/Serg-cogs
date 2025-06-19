@@ -155,7 +155,7 @@ class PredictionLeague(commands.Cog):
                 return await ctx.send("No players found in the list.")
             msg = "Current Player List:\n"
             for player in player_list:
-                msg += f"- {player['name']}\n"
+                msg += f"- {player}\n"
             await ctx.send(box(msg))
 
     @playerlist.command(name="addplayer")
@@ -163,7 +163,7 @@ class PredictionLeague(commands.Cog):
         """Adds a player to the Prediction League"""
         async with self.config.guild(ctx.guild).all() as guild_config:
             player_list = guild_config.get("playerlist", [])
-            if any(player['name'].lower() == player_name.lower() for player in player_list):
+            if player_name in player_list:
                 return await ctx.send(f"Player '{player_name}' already exists in the list.")
             
             player_list.append(player_name)
@@ -187,10 +187,11 @@ class PredictionLeague(commands.Cog):
     async def add_players(self, ctx, *, players: str):
         """Adds multiple players to the Prediction League"""
         player_names = [name.strip() for name in players.split(',')]
+
         async with self.config.guild(ctx.guild).all() as guild_config:
             player_list = guild_config.get("playerlist", [])
             for player_name in player_names:
-                if any(player['name'].lower() == player_name.lower() for player in player_list):
+                if player_name in player_list:
                     await ctx.send(f"Player '{player_name}' already exists in the list.")
                     continue
                 player_list.append(player_name)
