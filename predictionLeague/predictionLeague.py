@@ -147,7 +147,6 @@ class PredictionLeague(commands.Cog):
             }
 
     @plset.group()
-    @plset.command(name="player_list")
     async def player_list(self, ctx):
         """Manages the Player List for Prediction League"""
         async with self.config.guild(ctx.guild).all() as guild_config:
@@ -202,7 +201,6 @@ class PredictionLeague(commands.Cog):
             await ctx.send(f"Players added: {', '.join(player_names)}")
 
     @plset.group()
-    @plset.command(name="debug")
     async def debug(self, ctx):
         """Debugging commands for Prediction League"""
 
