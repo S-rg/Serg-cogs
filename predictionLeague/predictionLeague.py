@@ -147,7 +147,7 @@ class PredictionLeague(commands.Cog):
             }
 
     @plset.group()
-    async def player_list(self, ctx):
+    async def playerlist(self, ctx):
         """Manages the Player List for Prediction League"""
         async with self.config.guild(ctx.guild).all() as guild_config:
             player_list = guild_config.get("playerlist", [])
@@ -158,7 +158,7 @@ class PredictionLeague(commands.Cog):
                 msg += f"- {player['name']}\n"
             await ctx.send(box(msg))
 
-    @plset.command(name="addplayer")
+    @playerlist.command(name="addplayer")
     async def add_player(self, ctx, *, player_name):
         """Adds a player to the Prediction League"""
         async with self.config.guild(ctx.guild).all() as guild_config:
@@ -171,7 +171,7 @@ class PredictionLeague(commands.Cog):
             guild_config["playerlist"] = player_list
             await ctx.send(f"Player '{player_name}' has been added to the list.")
 
-    @plset.command(name="removeplayer")
+    @playerlist.command(name="removeplayer")
     async def remove_player(self, ctx, *, player_name):
         """Removes a player from the Prediction League"""
         async with self.config.guild(ctx.guild).all() as guild_config:
@@ -184,7 +184,7 @@ class PredictionLeague(commands.Cog):
             guild_config["playerlist"] = player_list
             await ctx.send(f"Player '{player_name}' has been removed from the list.")
 
-    @plset.command(name="addplayers")
+    @playerlist.command(name="addplayers")
     async def add_players(self, ctx, *, players: str):
         """Adds multiple players to the Prediction League"""
         player_names = [name.strip() for name in players.split(',')]
