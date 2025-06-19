@@ -30,7 +30,7 @@ class PredictionLeague(commands.Cog):
             elif 'motm' in part:
                 motm = part.replace('motm', '').strip()
 
-            else:
+            elif '-' in part:
                 scoreline_pattern = re.compile(r'(\d+)\s*-\s*(\d+)')
                 match = scoreline_pattern.search(part)
                 if match:
@@ -43,6 +43,9 @@ class PredictionLeague(commands.Cog):
                             cityscore, otherscore = score2, score1
                     else:
                         cityscore, otherscore = None, None
+
+            else:
+                return ValueError("Invalid prediction format")
 
         return {
             "fgs": fgs if 'fgs' in locals() else None,
@@ -57,6 +60,7 @@ class PredictionLeague(commands.Cog):
         """Command to get prediction from user"""
         try:
             predictions = self.get_prediction(message)
+            await ctx.message.add_reaction("✅")
         except:
             return await ctx.message.add_reaction("❌")      
 
