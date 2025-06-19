@@ -21,13 +21,13 @@ class PredictionLeague(commands.Cog):
         parts = message.split(',')
         for part in parts:
 
-            if part.has('fgs'):
+            if 'fgs' in part:
                 fgs = part.replace('fgs', '').strip()
                 
-            elif part.has('fgm') or part.has("'"):
+            elif 'fgm' in part or "'" in part:
                 fgm = int(part.replace('fgm', '').replace("'", '').strip())
 
-            elif part.has('motm'):
+            elif 'motm' in part:
                 motm = part.replace('motm', '').strip()
 
             else:
