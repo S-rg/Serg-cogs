@@ -66,13 +66,13 @@ class PredictionLeague(commands.Cog):
             return await ctx.message.add_reaction("❌")      
 
         async with self.config.guild(ctx.guild).all() as guild_config:
-            match_key = (guild_config['round_num'], guild_config['match_num'])
-            if str(match_key) not in guild_config["matches"]:
+            match_key = str((guild_config['round_num'], guild_config['match_num']))
+            if match_key not in guild_config["matches"]:
                 guild_config['matches'][match_key] = {
                     'info': {},
                     'predictions': {},
                     'correct_predictions': {}
-                }            
+                }
                 
             guild_config['matches'][match_key]['predictions'][ctx.author.id] = predictions  
             
@@ -125,7 +125,7 @@ class PredictionLeague(commands.Cog):
     @plset.command()
     async def setinfo(self, ctx, opp, date, comp):
         async with self.config.guild(ctx.guild).all() as guild_config:
-            match_key = (guild_config['round_num'], guild_config['match_num'])
+            match_key = str((guild_config['round_num'], guild_config['match_num']))
             if match_key not in guild_config["matches"]:
                 guild_config['matches'][match_key] = {
                     'info': {},
