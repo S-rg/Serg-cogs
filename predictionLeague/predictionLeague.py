@@ -18,6 +18,7 @@ class PredictionLeague(commands.Cog):
 
     def get_prediction(self, message):
         """Extracts the prediction from the message"""
+        message = message.lower()
         parts = message.split(',')
         for part in parts:
 
@@ -66,7 +67,7 @@ class PredictionLeague(commands.Cog):
 
         async with self.config.guild(ctx.guild).all() as guild_config:
             match_key = (guild_config['round_num'], guild_config['match_num'])
-            if match_key not in guild_config["matches"]:
+            if str(match_key) not in guild_config["matches"]:
                 guild_config['matches'][match_key] = {
                     'info': {},
                     'predictions': {},
