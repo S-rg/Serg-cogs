@@ -16,7 +16,7 @@ class PredictionLeague(commands.Cog):
         }
         self.config.register_guild(**default_guild)
 
-    def get_prediction(message):
+    def get_prediction(self, message):
         """Extracts the prediction from the message"""
         parts = message.split(',')
         for part in parts:
