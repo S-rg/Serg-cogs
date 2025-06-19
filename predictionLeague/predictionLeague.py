@@ -63,7 +63,7 @@ class PredictionLeague(commands.Cog):
         match, score, index = process.extractOne(
             in_name,
             player_list,
-            scorer=fuzz.token_set_ratio
+            scorer=fuzz.partial_ratio
         )
         
         if score >= threshold:
@@ -236,6 +236,6 @@ class PredictionLeague(commands.Cog):
             player_list = guild_config.get("playerlist", [])
             player = self.find_player(player_name, player_list)
             if player:
-                await ctx.send(f"Player found: {player['name']}")
+                await ctx.send(f"Player found: {player}")
             else:
                 await ctx.send("Player not found.")
