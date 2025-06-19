@@ -161,6 +161,7 @@ class PredictionLeague(commands.Cog):
     @playerlist.command(name="addplayer")
     async def add_player(self, ctx, *, player_name):
         """Adds a player to the Prediction League"""
+        player_name = player_name.lower()
         async with self.config.guild(ctx.guild).all() as guild_config:
             player_list = guild_config.get("playerlist", [])
             if player_name in player_list:
@@ -186,6 +187,7 @@ class PredictionLeague(commands.Cog):
     @playerlist.command(name="addplayers")
     async def add_players(self, ctx, *, players: str):
         """Adds multiple players to the Prediction League"""
+        players = players.lower()
         player_names = [name.strip() for name in players.split(',')]
 
         async with self.config.guild(ctx.guild).all() as guild_config:
