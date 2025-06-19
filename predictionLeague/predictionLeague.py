@@ -2,6 +2,7 @@ from redbot.core import commands, checks, Config
 from redbot.core.utils.chat_formatting import box
 import json
 from io import BytesIO
+import re
 
 class PredictionLeague(commands.Cog):
     
@@ -13,12 +14,56 @@ class PredictionLeague(commands.Cog):
             "match_num" : 0,
             "matches" : {}
         }
-        self.config.register_guild(**default_guild)      
+        self.config.register_guild(**default_guild)
+
+    def get_prediction(message):
+        """Extracts the prediction from the message"""
+        parts = message.split(',')
+        for part in parts:
+
+            if part.has('fgs'):
+                fgs = part.replace('fgs', '').strip()
+                
+            elif part.has('fgm') or part.has("'"):
+                fgm = int(part.replace('fgm', '').replace("'", '').strip())
+
+            elif part.has('motm'):
+                motm = part.replace('motm', '').strip()
+
+            else:
+                scoreline_pattern = re.compile(r'(\d+)\s*-\s*(\d+)')
+                match = scoreline_pattern.search(part)
+                if match:
+                    score1 = int(match.group(1))
+                    score2 = int(match.group(2))
+                    if "city" in part.lower():
+                        if part.lower().find("city") < part.find(match.group(0)):
+                            cityscore, otherscore = score1, score2
+                        else:
+                            cityscore, otherscore = score2, score1
+                    else:
+                        cityscore, otherscore = None, None
+
+        return {
+            "fgs": fgs if 'fgs' in locals() else None,
+            "fgm": fgm if 'fgm' in locals() else None,
+            "motm": motm if 'motm' in locals() else None,
+            "cityscore": cityscore if 'cityscore' in locals() else None,
+            "otherscore": otherscore if 'otherscore' in locals() else None
+        }
 
     @commands.command()
     async def predict(self, ctx, *, message):
         """Command to get prediction from user"""
-        await ctx.send(message)
+        predictions = self.get_prediction(message)
+        msg = "Your Prediction:\n"
+        msg += f"fgs: {predictions['fgs']}\n"
+        msg += f"fgm: {predictions['fgm']}\n"
+        msg += f"motm: {predictions['motm']}\n"
+        msg += f"cityscore: {predictions['cityscore']}\n"
+        msg += f"otherscore: {predictions['otherscore']}\n"
+        await ctx.send(box(msg, lang="yaml"))
+            
 
     @checks.admin_or_permissions(manage_channels = True)
     @commands.group(autohelp=True)
