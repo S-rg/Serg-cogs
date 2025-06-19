@@ -55,14 +55,21 @@ class PredictionLeague(commands.Cog):
     @commands.command()
     async def predict(self, ctx, *, message):
         """Command to get prediction from user"""
-        predictions = self.get_prediction(message)
-        msg = "Your Prediction:\n"
-        msg += f"fgs: {predictions['fgs']}\n"
-        msg += f"fgm: {predictions['fgm']}\n"
-        msg += f"motm: {predictions['motm']}\n"
-        msg += f"cityscore: {predictions['cityscore']}\n"
-        msg += f"otherscore: {predictions['otherscore']}\n"
-        await ctx.send(box(msg, lang="yaml"))
+        try:
+            predictions = self.get_prediction(message)
+        except:
+            return await ctx.message.add_reaction("❌")      
+
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            match_key = (guild_config['round_num'], guild_config['match_num'])
+            if match_key not in guild_config["matches"]:
+                guild_config['matches'][match_key] = {
+                    'info': {},
+                    'predictions': {},
+                    'correct_predictions': {}
+                }            
+                
+            guild_config['matches'][match_key]['predictions'][ctx.author.id] = predictions  
             
 
     @checks.admin_or_permissions(manage_channels = True)
@@ -113,14 +120,13 @@ class PredictionLeague(commands.Cog):
     @plset.command()
     async def setinfo(self, ctx, opp, date, comp):
         async with self.config.guild(ctx.guild).all() as guild_config:
-            match_key = (guild_config['season_num'], guild_config['round_num'], guild_config['match_num'])
+            match_key = (guild_config['round_num'], guild_config['match_num'])
             if match_key not in guild_config["matches"]:
                 guild_config['matches'][match_key] = {
-                'info': {},
-                'predictions': {},
-                'scores': {},
-                'vals': {}
-            }
+                    'info': {},
+                    'predictions': {},
+                    'correct_predictions': {}
+                }
                 
             guild_config['matches'][match_key]['info'] = {
                 'opponent' : opp,
