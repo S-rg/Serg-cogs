@@ -3,6 +3,7 @@ from redbot.core.utils.chat_formatting import box
 import json
 from io import BytesIO
 import re
+from rapidfuzz import process, fuzz
 
 class PredictionLeague(commands.Cog):
     
@@ -12,7 +13,8 @@ class PredictionLeague(commands.Cog):
         default_guild = {
             "round_num" : 0,
             "match_num" : 0,
-            "matches" : {}
+            "matches" : {},
+            "playerlist": []
         }
         self.config.register_guild(**default_guild)
 
@@ -55,6 +57,21 @@ class PredictionLeague(commands.Cog):
             "cityscore": cityscore if 'cityscore' in locals() else None,
             "otherscore": otherscore if 'otherscore' in locals() else None
         }
+    
+    def find_player(self, in_name, player_list, threshold=80):
+        """Finds a player in the player list"""
+        match, score, index = process.extractOne(
+            in_name,
+            player_list,
+            scorer=fuzz.token_set_ratio
+        )
+        
+        if score >= threshold:
+            return player_list[index]
+        else:
+            return None
+
+
 
     @commands.command()
     async def predict(self, ctx, *, message):
@@ -82,16 +99,6 @@ class PredictionLeague(commands.Cog):
     async def plset(self,ctx):
         """Prediction League Settings Group"""
         
-
-    @plset.command()
-    async def show(self,ctx):
-        """Shows the Current Prediction League Settings"""
-        round_num = await self.config.guild(ctx.guild).round_num()
-        match_num = await self.config.guild(ctx.guild).match_num()
-        msg = ""
-        msg += "Round Number: {}\n".format(round_num)
-        msg += "Match Number: {}\n".format(match_num)
-        await ctx.send(box(msg))
     
     @plset.command()
     async def setround(self, ctx, round : int):
@@ -139,13 +146,73 @@ class PredictionLeague(commands.Cog):
                 'competition' : comp
             }
 
-    @plset.command()
-    async def debug_infodump(self, ctx):
+    @plset.group()
+    @plset.command(name="player_list")
+    async def player_list(self, ctx):
+        """Manages the Player List for Prediction League"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            player_list = guild_config.get("playerlist", [])
+            if not player_list:
+                return await ctx.send("No players found in the list.")
+            msg = "Current Player List:\n"
+            for player in player_list:
+                msg += f"- {player['name']}\n"
+            await ctx.send(box(msg))
+
+    @plset.command(name="addplayer")
+    async def add_player(self, ctx, *, player_name):
+        """Adds a player to the Prediction League"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            player_list = guild_config.get("playerlist", [])
+            if any(player['name'].lower() == player_name.lower() for player in player_list):
+                return await ctx.send(f"Player '{player_name}' already exists in the list.")
+            
+            new_player = {"name": player_name}
+            player_list.append(new_player)
+            guild_config["playerlist"] = player_list
+            await ctx.send(f"Player '{player_name}' has been added to the list.")
+
+    @plset.command(name="removeplayer")
+    async def remove_player(self, ctx, *, player_name):
+        """Removes a player from the Prediction League"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            player_list = guild_config.get("playerlist", [])
+            player = self.find_player(player_name, player_list)
+            if not player:
+                return await ctx.send(f"Player '{player_name}' not found in the list.")
+            
+            player_list.remove(player)
+            guild_config["playerlist"] = player_list
+            await ctx.send(f"Player '{player_name}' has been removed from the list.")
+
+    @plset.command(name="addplayers")
+    async def add_players(self, ctx, *, players: str):
+        """Adds multiple players to the Prediction League"""
+        player_names = [name.strip() for name in players.split(',')]
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            player_list = guild_config.get("playerlist", [])
+            for player_name in player_names:
+                if any(player['name'].lower() == player_name.lower() for player in player_list):
+                    await ctx.send(f"Player '{player_name}' already exists in the list.")
+                    continue
+                
+                new_player = {"name": player_name}
+                player_list.append(new_player)
+            guild_config["playerlist"] = player_list
+            await ctx.send(f"Players added: {', '.join(player_names)}")
+
+    @plset.group()
+    @plset.command(name="debug")
+    async def debug(self, ctx):
+        """Debugging commands for Prediction League"""
+
+    @debug.command()
+    async def infodump(self, ctx):
         """Dumps the entire config for debugging"""
         async with self.config.guild(ctx.guild).all() as guild_config:
             await ctx.send(box(str(guild_config)))
 
-    @plset.command()
+    @debug.command()
     async def REMOVETHISSERG(self, ctx):
         """Resets the Prediction League Config"""
         await self.config.guild(ctx.guild).clear()
@@ -155,3 +222,24 @@ class PredictionLeague(commands.Cog):
             "matches": {}
         })
         await ctx.send("Prediction League Config has been reset.")
+
+    @debug.command()
+    async def show(self,ctx):
+        """Shows the Current Prediction League Settings"""
+        round_num = await self.config.guild(ctx.guild).round_num()
+        match_num = await self.config.guild(ctx.guild).match_num()
+        msg = ""
+        msg += "Round Number: {}\n".format(round_num)
+        msg += "Match Number: {}\n".format(match_num)
+        await ctx.send(box(msg))
+
+    @debug.command()
+    async def findplayer(self, ctx, *, player_name):
+        """Finds a player in the player list"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            player_list = guild_config.get("playerlist", [])
+            player = self.find_player(player_name, player_list)
+            if player:
+                await ctx.send(f"Player found: {player['name']}")
+            else:
+                await ctx.send("Player not found.")
