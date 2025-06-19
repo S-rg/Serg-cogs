@@ -16,7 +16,7 @@ class PredictionLeague(commands.Cog):
         self.config.register_guild(**default_guild)      
 
     @commands.command()
-    async def predict(self, ctx, message):
+    async def predict(self, ctx, *, message):
         """Command to get prediction from user"""
         await ctx.send(message)
 
