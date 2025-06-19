@@ -166,8 +166,7 @@ class PredictionLeague(commands.Cog):
             if any(player['name'].lower() == player_name.lower() for player in player_list):
                 return await ctx.send(f"Player '{player_name}' already exists in the list.")
             
-            new_player = {"name": player_name}
-            player_list.append(new_player)
+            player_list.append(player_name)
             guild_config["playerlist"] = player_list
             await ctx.send(f"Player '{player_name}' has been added to the list.")
 
@@ -194,9 +193,7 @@ class PredictionLeague(commands.Cog):
                 if any(player['name'].lower() == player_name.lower() for player in player_list):
                     await ctx.send(f"Player '{player_name}' already exists in the list.")
                     continue
-                
-                new_player = {"name": player_name}
-                player_list.append(new_player)
+                player_list.append(player_name)
             guild_config["playerlist"] = player_list
             await ctx.send(f"Players added: {', '.join(player_names)}")
 
