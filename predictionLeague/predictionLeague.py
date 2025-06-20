@@ -14,7 +14,8 @@ class PredictionLeague(commands.Cog):
             "round_num" : 0,
             "match_num" : 0,
             "matches" : {},
-            "playerlist": []
+            "playerlist": [],
+            "open": True
         }
         self.config.register_guild(**default_guild)
 
@@ -70,7 +71,59 @@ class PredictionLeague(commands.Cog):
             return player_list[index]
         else:
             return None
+        
+    def score(self, predictions, correct_predictions):
+        """Calculates the score based on predictions and correct predictions"""
+        score = 0
+        
+        predicted_result = 'w' if predictions['cityscore'] > predictions['otherscore'] else 'l' if predictions['cityscore'] < predictions['otherscore'] else 't'
+        correct_result = 'w' if correct_predictions['cityscore'] > correct_predictions['otherscore'] else 'l' if correct_predictions['cityscore'] < correct_predictions['otherscore'] else 't'
 
+        predicted_gd = abs(predictions['cityscore'] - predictions['otherscore'])
+        correct_gd = abs(correct_predictions['cityscore'] - correct_predictions['otherscore'])
+
+        predicted_total = predictions['cityscore'] + predictions['otherscore']
+        correct_total = correct_predictions['cityscore'] + correct_predictions['otherscore']
+
+        if predicted_result == correct_result:
+            score += 1
+        else:
+            score -= 1
+
+        if predicted_gd == correct_gd:
+            score += 1
+        if predicted_total == correct_total:
+            score += 1
+        if predictions['cityscore'] == correct_predictions['cityscore']:
+            score += 2
+        if predictions['otherscore'] == correct_predictions['otherscore']:
+            score += 2
+
+        if predictions['fgs'] == correct_predictions['fgs']:
+            score += 5
+        else:
+            score -= 1
+        
+        if predictions['fgm'] == correct_predictions['fgm']:
+            score += 10
+        elif abs(predictions['fgm'] - correct_predictions['fgm']) < 6:
+            score += 5
+        else:
+            score -= 1
+
+        if predictions['motm'] == correct_predictions['motm']:
+            score += 7
+        else:
+            score -= 1
+
+    
+    def score_matchday(self, predictions, correct_predictions):
+        """Scores the matchday based on predictions and correct predictions"""
+        scores = {}
+        for player_id, player_prediction in predictions.items():
+            player_score = self.score(player_prediction, correct_predictions)
+            scores[player_id] = player_score
+        return scores
 
 
     @commands.command()
@@ -160,6 +213,29 @@ class PredictionLeague(commands.Cog):
             predictions = self.get_prediction(message)
             
             config['matches'][match_key]['correct_predictions'] = predictions
+
+
+    @plset.command()
+    async def scorematchday(self, ctx, round=None, match=None):
+        """Scores the Matchday"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            if round is None:
+                round = guild_config['round_num']
+            if match is None:
+                match = guild_config['match_num']
+            
+            match_key = str((round, match))
+            if match_key not in guild_config["matches"]:
+                return await ctx.send("No predictions found for this matchday.")
+            
+            match_data = guild_config["matches"][match_key]
+            correct_predictions = match_data.get('correct_predictions', {})
+            predictions = match_data.get('predictions', {})
+            
+            if not correct_predictions:
+                return await ctx.send("No correct predictions set for this matchday.")
+            
+            scores = self.score_matchday(predictions, correct_predictions)
 
     @plset.group()
     async def playerlist(self, ctx):
@@ -256,3 +332,12 @@ class PredictionLeague(commands.Cog):
                 await ctx.send(f"Player found: {player}")
             else:
                 await ctx.send("Player not found.")
+
+    @debug.command()
+    async def backup(self, ctx):
+        """Creates a backup of the Prediction League config"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            backup_data = json.dumps(guild_config, indent=4)
+            backup_file = BytesIO(backup_data.encode('utf-8'))
+            backup_file.name = f"prediction_league_backup_{ctx.guild.id}.json"
+            await ctx.send("Here is your backup file:", file=backup_file)
