@@ -3,6 +3,7 @@ from redbot.core.utils.chat_formatting import box
 import json
 from io import BytesIO
 import re
+from discord import file
 from rapidfuzz import process, fuzz
 
 class PredictionLeague(commands.Cog):
@@ -339,5 +340,6 @@ class PredictionLeague(commands.Cog):
         async with self.config.guild(ctx.guild).all() as guild_config:
             backup_data = json.dumps(guild_config, indent=4)
             backup_file = BytesIO(backup_data.encode('utf-8'))
-            backup_file.name = f"prediction_league_backup_{ctx.guild.id}.json"
-            await ctx.send("Here is your backup file:", file=backup_file)
+            backup_file.seek(0)
+            file = File(fp=backup_file, filename="backup.json")
+            await ctx.send("Here is your backup file:", file=file)
