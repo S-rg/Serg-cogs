@@ -131,20 +131,35 @@ class PredictionLeague(commands.Cog):
     
     @plset.command()
     async def setinfo(self, ctx, opp, date, comp):
-        async with self.config.guild(ctx.guild).all() as guild_config:
-            match_key = str((guild_config['round_num'], guild_config['match_num']))
-            if match_key not in guild_config["matches"]:
-                guild_config['matches'][match_key] = {
+        async with self.config.guild(ctx.guild).all() as config:
+            match_key = str((config['round_num'], config['match_num']))
+            if match_key not in config["matches"]:
+                config['matches'][match_key] = {
                     'info': {},
                     'predictions': {},
                     'correct_predictions': {}
                 }
                 
-            guild_config['matches'][match_key]['info'] = {
+            config['matches'][match_key]['info'] = {
                 'opponent' : opp,
                 'date' : date,
                 'competition' : comp
             }
+
+    @plset.command()
+    async def correctprediction(self, ctx, *, message):
+        async with self.config.guild(ctx.guild).all() as config:
+            match_key = str((config['round_num'], config['match_num']))
+            if match_key not in config['matches']:
+                config['matches'][match_key] = {
+                    'info': {},
+                    'predictions': {},
+                    'correct_predictions': {}
+                }
+
+            predictions = self.get_prediction(message)
+            
+            config['matches'][match_key]['correct_predictions'] = predictions
 
     @plset.group()
     async def playerlist(self, ctx):
