@@ -3,7 +3,7 @@ from redbot.core.utils.chat_formatting import box
 import json
 from io import BytesIO
 import re
-from discord import file
+from discord import File
 from rapidfuzz import process, fuzz
 
 class PredictionLeague(commands.Cog):
