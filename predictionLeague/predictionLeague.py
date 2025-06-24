@@ -16,7 +16,8 @@ class PredictionLeague(commands.Cog):
             "match_num" : 0,
             "matches" : {},
             "playerlist": [],
-            "open": True
+            "open": True,
+            "round_scores": {}
         }
         self.config.register_guild(**default_guild)
 
@@ -130,6 +131,7 @@ class PredictionLeague(commands.Cog):
     @commands.command()
     async def predict(self, ctx, *, message):
         """Command to get prediction from user"""
+        
         try:
             predictions = self.get_prediction(message)
             await ctx.message.add_reaction("✅")
@@ -137,6 +139,9 @@ class PredictionLeague(commands.Cog):
             return await ctx.message.add_reaction("❌")      
 
         async with self.config.guild(ctx.guild).all() as guild_config:
+            if not guild_config["open"]:
+                return await ctx.message.add_reaction("❌")
+
             match_key = str((guild_config['round_num'], guild_config['match_num']))
             if match_key not in guild_config["matches"]:
                 guild_config['matches'][match_key] = {
@@ -237,6 +242,29 @@ class PredictionLeague(commands.Cog):
                 return await ctx.send("No correct predictions set for this matchday.")
             
             scores = self.score_matchday(predictions, correct_predictions)
+
+            if round not in guild_config["round_scores"]:
+                guild_config["round_scores"][round] = {}
+
+            for player_id, score in scores.items():
+                if player_id not in guild_config["round_scores"][round]:
+                    guild_config["round_scores"][round][player_id] = 0
+                guild_config["round_scores"][round][player_id] += score
+
+
+    @plset.command()
+    async def open(self, ctx):
+        """Opens the Prediction League for predictions"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            guild_config["open"] = True
+            await ctx.send("Prediction League is now open for predictions.")
+
+    @plset.command()
+    async def close(self, ctx):
+        """Closes the Prediction League for predictions"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            guild_config["open"] = False
+            await ctx.send("Prediction League is now closed for predictions.")
 
     @plset.group()
     async def playerlist(self, ctx):
