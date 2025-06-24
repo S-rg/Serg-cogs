@@ -134,6 +134,10 @@ class PredictionLeague(commands.Cog):
         
         try:
             predictions = self.get_prediction(message)
+            if predictions['fgs'] is not None:
+                predictions['fgs'] = self.find_player(predictions['fgs'], await self.config.guild(ctx.guild).playerlist())
+            if predictions['motm'] is not None:
+                predictions['motm'] = self.find_player(predictions['motm'], await self.config.guild(ctx.guild).playerlist())
             await ctx.message.add_reaction("✅")
         except:
             return await ctx.message.add_reaction("❌")      
