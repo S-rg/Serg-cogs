@@ -150,7 +150,11 @@ class PredictionLeague(commands.Cog):
                     'correct_predictions': {}
                 }
                 
-            guild_config['matches'][match_key]['predictions'][ctx.author.id] = predictions  
+            guild_config['matches'][match_key]['predictions'][ctx.author.id] = predictions
+
+            if guild_config["debug_mode"]:
+                predictions_str = json.dumps(predictions, indent=2)
+                await ctx.send(box(predictions_str))
             
 
     @checks.admin_or_permissions(manage_channels = True)
@@ -361,6 +365,14 @@ class PredictionLeague(commands.Cog):
                 await ctx.send(f"Player found: {player}")
             else:
                 await ctx.send("Player not found.")
+
+    @debug.command()
+    async def toggledebugmode(self, ctx):
+        """Toggles the debug mode for Prediction League"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            guild_config["debug_mode"] = not guild_config.get("debug_mode", False)
+            status = "enabled" if guild_config["debug_mode"] else "disabled"
+            await ctx.send(f"Debug mode is now {status}.")
 
     @debug.command()
     async def backup(self, ctx):
