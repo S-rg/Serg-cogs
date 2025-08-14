@@ -7,4 +7,9 @@ class Roledit(commands.Cog):
     @commands.command()
     async def trystuff(self, ctx, roleid):
         role = ctx.guild.get_role(roleid)
-        await ctx.send(role.colour)
+
+        if role:
+            await ctx.send(role)
+            await ctx.send(dir(role))
+        else:
+            await ctx.send("Role not found.")
