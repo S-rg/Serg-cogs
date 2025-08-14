@@ -35,7 +35,7 @@ class PredictionLeague(commands.Cog):
                 fgs = part.replace('fgs', '').strip()
                 
             elif 'fgm' in part or "'" in part or "’" in part or "‘" in part:
-                fgm = int(part.replace('fgm', '').replace("'", '').replace("’", '').replace("‘", '').strip())
+                fgm = int(part.replace('fgm', '').replace("'", '').replace("’", '').replace("‘", '').replace('′', '').strip())
 
             elif 'motm' in part:
                 motm = part.replace('motm', '').strip()
