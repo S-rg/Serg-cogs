@@ -6,7 +6,7 @@ class Roledit(commands.Cog):
 
     @commands.command()
     async def trystuff(self, ctx, roleid):
-        role = ctx.guild.get_role(roleid)
+        role = ctx.guild.get_role(int(roleid))
 
         if role:
             await ctx.send(role)
