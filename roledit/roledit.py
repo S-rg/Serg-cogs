@@ -5,7 +5,6 @@ class Roledit(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def trystuff(self, ctx, roleid=0):
+    async def trystuff(self, ctx, roleid):
         role = ctx.guild.get_role(roleid)
-
-        await ctx.send(role)
+        await ctx.send(role.colour)
