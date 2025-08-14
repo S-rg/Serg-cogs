@@ -11,5 +11,9 @@ class Roledit(commands.Cog):
         if role:
             await ctx.send(role)
             await ctx.send(dir(role))
+
+            for attr in dir(role):
+                if not attr.startswith("_"):
+                    await ctx.send(f"{attr}: {getattr(role, attr)}")
         else:
             await ctx.send("Role not found.")
