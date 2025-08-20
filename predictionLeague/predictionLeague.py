@@ -381,10 +381,6 @@ class PredictionLeague(commands.Cog):
     @plset.command(name="editprediction")
     async def editprediction(self, ctx, user, *, message):
         """Edits a prediction for a user"""
-        user = self.find_player(user, await self.config.guild(ctx.guild).playerlist())
-        if not user:
-            return await ctx.send("Player not found in the list.")
-
         try:
             predictions = self.get_prediction(message)
         except ValueError as e:
