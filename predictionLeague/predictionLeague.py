@@ -3,7 +3,7 @@ from redbot.core.utils.chat_formatting import box # type: ignore
 import json
 from io import BytesIO
 import re
-from discord import File, Forbidden # type: ignore
+from discord import File, Forbidden, NotFound # type: ignore
 from rapidfuzz import process, fuzz # type: ignore
 
 class PredictionLeague(commands.Cog):
@@ -299,6 +299,12 @@ class PredictionLeague(commands.Cog):
                 if score is None:
                     continue
                 user = self.bot.get_user(player_id)
+                if not user:
+                    try:
+                        user = await self.bot.fetch_user(player_id)
+                    except NotFound:
+                        user = None
+
                 player_name = user.display_name if user else f"User ID {player_id}"
                 msg += f"{player_name}: {score}\n"
 
