@@ -378,7 +378,7 @@ class PredictionLeague(commands.Cog):
             await ctx.send(f"Players added: {', '.join(player_names)}")
 
 
-    @plset.command()
+    @plset.command(name="editprediction")
     async def editprediction(self, ctx, user, *, message):
         """Edits a prediction for a user"""
         user = self.find_player(user, await self.config.guild(ctx.guild).playerlist())
