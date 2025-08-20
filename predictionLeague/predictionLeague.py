@@ -289,7 +289,7 @@ class PredictionLeague(commands.Cog):
                 match = guild_config['match_num']
 
             match_key = str((round, match))
-            round_scores = guild_config["round_scores"].get(round, {})
+            round_scores = guild_config["round_scores"].get(str(round), {})
             if not round_scores:
                 return await ctx.send("No scores available for this matchday.")
 
@@ -392,6 +392,8 @@ class PredictionLeague(commands.Cog):
                 return await ctx.send("No predictions found for this matchday.")
             
             guild_config["matches"][match_key]['predictions'][user] = predictions
+
+            await ctx.message.add_reaction("✅")
 
             if guild_config["debug_mode"]:
                 predictions_str = json.dumps(predictions, indent=2)
