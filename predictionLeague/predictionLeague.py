@@ -379,7 +379,27 @@ class PredictionLeague(commands.Cog):
 
 
     @plset.command()
-    async def editprediction(self, ctx, user, *, message)
+    async def editprediction(self, ctx, user, *, message):
+        """Edits a prediction for a user"""
+        user = self.find_player(user, await self.config.guild(ctx.guild).playerlist())
+        if not user:
+            return await ctx.send("Player not found in the list.")
+
+        try:
+            predictions = self.get_prediction(message)
+        except ValueError as e:
+            return await ctx.send(f"Error parsing prediction: {str(e)}")
+
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            match_key = str((guild_config['round_num'], guild_config['match_num']))
+            if match_key not in guild_config["matches"]:
+                return await ctx.send("No predictions found for this matchday.")
+            
+            guild_config["matches"][match_key]['predictions'][user] = predictions
+
+            if guild_config["debug_mode"]:
+                predictions_str = json.dumps(predictions, indent=2)
+                await ctx.send(box(predictions_str))
 
     @plset.group()
     async def debug(self, ctx):
