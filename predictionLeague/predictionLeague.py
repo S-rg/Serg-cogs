@@ -3,7 +3,7 @@ from redbot.core.utils.chat_formatting import box # type: ignore
 import json
 from io import BytesIO
 import re
-from discord import File # type: ignore
+from discord import File, Forbidden # type: ignore
 from rapidfuzz import process, fuzz # type: ignore
 
 class PredictionLeague(commands.Cog):
@@ -170,6 +170,12 @@ class PredictionLeague(commands.Cog):
                 await ctx.send(box(predictions_str))
 
             await ctx.message.add_reaction("✅")
+
+            try:
+                predictions_str = json.dumps(predictions, indent=2)
+                await ctx.author.send(box(predictions_str))
+            except Forbidden:
+                await ctx.send("I couldn't DM you — maybe you have DMs disabled?")
             
 
     @checks.admin_or_permissions(manage_channels = True)
@@ -370,6 +376,10 @@ class PredictionLeague(commands.Cog):
                 player_list.append(player_name)
             guild_config["playerlist"] = player_list
             await ctx.send(f"Players added: {', '.join(player_names)}")
+
+
+    @plset.command()
+    async def editprediction(self, ctx, user, *, message)
 
     @plset.group()
     async def debug(self, ctx):
