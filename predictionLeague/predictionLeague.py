@@ -334,7 +334,7 @@ class PredictionLeague(commands.Cog):
                 return await ctx.send("No scores available for this matchday.")
             
             #widths = [min(max(len(str(cell)), 15) for cell in col) for col in zip(*rows)]
-            widths = [10, 5, 5, 5, 15, 4, 15]
+            widths = [10, 5, 5, 5, 15, 5, 15]
             lines = []
 
             for row in rows:
@@ -350,9 +350,6 @@ class PredictionLeague(commands.Cog):
 
             for page in pagify(msg, delims=["\n"], page_length=1900):
                 await ctx.send(box(page))
-
-            for width in widths:
-                await ctx.send(f"Column width: {width}")
 
 
 
