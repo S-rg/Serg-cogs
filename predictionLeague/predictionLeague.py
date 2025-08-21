@@ -243,6 +243,11 @@ class PredictionLeague(commands.Cog):
                 }
 
             predictions = self.get_prediction(message)
+
+            if predictions['fgs'] is not None:
+                predictions['fgs'] = self.find_player(predictions['fgs'], await self.config.guild(ctx.guild).playerlist())
+            if predictions['motm'] is not None:
+                predictions['motm'] = self.find_player(predictions['motm'], await self.config.guild(ctx.guild).playerlist())
             
             config['matches'][match_key]['correct_predictions'] = predictions
 
