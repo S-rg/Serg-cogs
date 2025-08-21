@@ -324,12 +324,17 @@ class PredictionLeague(commands.Cog):
             if len(rows) == 2:
                 return await ctx.send("No scores available for this matchday.")
             
-            widths = [max(len(str(cell)) for cell in col) for col in zip(*rows)]
+            widths = [min(max(len(str(cell)), 15) for cell in col) for col in zip(*rows)]
             lines = []
 
             for row in rows:
-                line = "  ".join(str(cell).ljust(w) for cell, w in zip(row, widths))
-                lines.append(line)
+                cells = []
+                for cell, w in zip(row, widths):
+                    s = str(cell)
+                    if len(s) > w:
+                        s = s[: w - 1] + "…"
+                    cells.append(s.ljust(w))
+                lines.append("  ".join(cells))
 
             msg = "\n".join(lines)
 
