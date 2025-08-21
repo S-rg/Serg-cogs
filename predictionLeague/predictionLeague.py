@@ -296,7 +296,7 @@ class PredictionLeague(commands.Cog):
             msg = f"Scores for Round {round} Match {match}:\n"
             predictions = guild_config["matches"].get(match_key, {}).get('predictions', {})
             correct_predictions = guild_config["matches"].get(match_key, {}).get('correct_predictions', {})
-            rows = [["Player", "Score", "City Score", "Opponent Score", "FGS", "FGM", "MOTM"]]
+            rows = [["Player", "Score", "City", "Opp", "FGS", "FGM", "MOTM"]]
             rows.append(['', '', correct_predictions.get('cityscore', ''), correct_predictions.get('otherscore', ''), correct_predictions.get('fgs', ''), str(correct_predictions.get('fgm', '')) + "'", correct_predictions.get('motm', '')])
 
             for player_id, matches in round_scores.items():
