@@ -109,7 +109,7 @@ class PredictionLeague(commands.Cog):
         if predictions['fgs'] == correct_predictions['fgs']:
             score += 5
         else:
-            score -= 1
+            score -= 1 if predictions['fgs'] is not None else 0
 
 
         if predictions['fgm'] is None or correct_predictions['fgm'] is None:
@@ -119,12 +119,12 @@ class PredictionLeague(commands.Cog):
         elif abs(predictions['fgm'] - correct_predictions['fgm']) < 6:
             score += 5
         else:
-            score -= 1
+            score -= 1 if predictions['fgm'] is not None else 0
 
         if predictions['motm'] == correct_predictions['motm']:
             score += 7
         else:
-            score -= 1
+            score -= 1 if predictions['motm'] is not None else 0
 
         return score
 
