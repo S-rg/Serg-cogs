@@ -328,7 +328,8 @@ class PredictionLeague(commands.Cog):
             if len(rows) == 2:
                 return await ctx.send("No scores available for this matchday.")
             
-            widths = [min(max(len(str(cell)), 15) for cell in col) for col in zip(*rows)]
+            #widths = [min(max(len(str(cell)), 15) for cell in col) for col in zip(*rows)]
+            widths = [10, 5, 5, 5, 15, 3, 15]
             lines = []
 
             for row in rows:
