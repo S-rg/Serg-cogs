@@ -1,5 +1,5 @@
 from redbot.core import commands, checks, Config # type: ignore
-from redbot.core.utils.chat_formatting import box # type: ignore
+from redbot.core.utils.chat_formatting import box, pagify # type: ignore
 import json
 from io import BytesIO
 import re
@@ -294,6 +294,11 @@ class PredictionLeague(commands.Cog):
                 return await ctx.send("No scores available for this matchday.")
 
             msg = f"Scores for Round {round} Match {match}:\n"
+            predictions = guild_config["matches"].get(match_key, {}).get('predictions', {})
+            correct_predictions = guild_config["matches"].get(match_key, {}).get('correct_predictions', {})
+            rows = [["Player", "Score", "City Score", "Opponent Score", "FGS", "FGM", "MOTM"]]
+            rows.append(['', '', correct_predictions.get('cityscore', ''), correct_predictions.get('otherscore', ''), correct_predictions.get('fgs', ''), correct_predictions.get('fgm', '')+ "'", correct_predictions.get('motm', '')])
+
             for player_id, matches in round_scores.items():
                 score = matches.get(match_key)
                 if score is None:
@@ -306,12 +311,30 @@ class PredictionLeague(commands.Cog):
                         user = None
 
                 player_name = user.display_name if user else f"User ID {player_id}"
-                msg += f"{player_name}: {score}\n"
+                rows.append([
+                    player_name,
+                    score,
+                    predictions.get(player_id, {}).get('cityscore', ''),
+                    predictions.get(player_id, {}).get('otherscore', ''),
+                    predictions.get(player_id, {}).get('fgs', ''),
+                    predictions.get(player_id, {}).get('fgm', '') + "'",
+                    predictions.get(player_id, {}).get('motm', '')
+                ])
 
-            if msg.strip() == f"Scores for Round {round} Match {match}:":
-                return await ctx.send("No scores found for this matchday.")
+            if len(rows) == 2:
+                return await ctx.send("No scores available for this matchday.")
+            
+            widths = [max(len(str(cell)) for cell in col) for col in zip(*rows)]
+            lines = []
 
-            await ctx.send(box(msg))
+            for row in rows:
+                line = "  ".join(str(cell).ljust(w) for cell, w in zip(row, widths))
+                lines.append(line)
+
+            msg = "\n".join(lines)
+
+            for page in pagify(box(msg), delims=["\n"], page_length=1900):
+                await ctx.send(page)
 
 
 
