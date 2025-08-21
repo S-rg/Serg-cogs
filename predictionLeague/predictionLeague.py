@@ -18,7 +18,8 @@ class PredictionLeague(commands.Cog):
             "playerlist": [],
             "open": True,
             "round_scores": {},
-            "debug_mode": False
+            "debug_mode": False,
+            "user_id_map": {}
         }
         self.config.register_guild(**default_guild)
 
@@ -303,14 +304,17 @@ class PredictionLeague(commands.Cog):
                 score = matches.get(match_key)
                 if score is None:
                     continue
-                user = self.bot.get_user(player_id)
-                if not user:
+                username = guild_config["user_id_map"].get(player_id)
+                if not username:
                     try:
                         user = await self.bot.fetch_user(player_id)
-                    except NotFound:
-                        user = None
+                        username = user.display_name
+                        guild_config["user_id_map"][player_id] = username
 
-                player_name = user.display_name if user else f"User ID {player_id}"
+                    except NotFound:
+                        username = None
+
+                player_name = username if username else f"User ID {player_id}"
                 rows.append([
                     player_name,
                     score,
@@ -340,6 +344,9 @@ class PredictionLeague(commands.Cog):
 
             for page in pagify(msg, delims=["\n"], page_length=1900):
                 await ctx.send(box(page))
+
+            for width in widths:
+                await ctx.send(f"Column width: {width}")
 
 
 
