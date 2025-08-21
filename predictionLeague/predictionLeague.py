@@ -333,8 +333,8 @@ class PredictionLeague(commands.Cog):
 
             msg = "\n".join(lines)
 
-            for page in pagify(box(msg), delims=["\n"], page_length=1900):
-                await ctx.send(page)
+            for page in pagify(msg, delims=["\n"], page_length=1900):
+                await ctx.send(box(page))
 
 
 
