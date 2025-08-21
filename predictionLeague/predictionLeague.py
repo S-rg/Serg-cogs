@@ -297,7 +297,7 @@ class PredictionLeague(commands.Cog):
             predictions = guild_config["matches"].get(match_key, {}).get('predictions', {})
             correct_predictions = guild_config["matches"].get(match_key, {}).get('correct_predictions', {})
             rows = [["Player", "Score", "City Score", "Opponent Score", "FGS", "FGM", "MOTM"]]
-            rows.append(['', '', correct_predictions.get('cityscore', ''), correct_predictions.get('otherscore', ''), correct_predictions.get('fgs', ''), correct_predictions.get('fgm', '')+ "'", correct_predictions.get('motm', '')])
+            rows.append(['', '', correct_predictions.get('cityscore', ''), correct_predictions.get('otherscore', ''), correct_predictions.get('fgs', ''), str(correct_predictions.get('fgm', '')) + "'", correct_predictions.get('motm', '')])
 
             for player_id, matches in round_scores.items():
                 score = matches.get(match_key)
@@ -317,7 +317,7 @@ class PredictionLeague(commands.Cog):
                     predictions.get(player_id, {}).get('cityscore', ''),
                     predictions.get(player_id, {}).get('otherscore', ''),
                     predictions.get(player_id, {}).get('fgs', ''),
-                    predictions.get(player_id, {}).get('fgm', '') + "'",
+                    str(predictions.get(player_id, {}).get('fgm', '')) + "'",
                     predictions.get(player_id, {}).get('motm', '')
                 ])
 
