@@ -329,7 +329,7 @@ class PredictionLeague(commands.Cog):
                 return await ctx.send("No scores available for this matchday.")
             
             #widths = [min(max(len(str(cell)), 15) for cell in col) for col in zip(*rows)]
-            widths = [10, 5, 5, 5, 15, 3, 15]
+            widths = [10, 5, 5, 5, 15, 4, 15]
             lines = []
 
             for row in rows:
@@ -497,3 +497,10 @@ class PredictionLeague(commands.Cog):
             guild_config["round_scores"] = {}
             guild_config["matches"] = {}
             await ctx.send("All scores have been removed from the Prediction League.")
+
+    @debug.command()
+    async def edit_username(self, ctx, player_id, username):
+        """Edits the username of a player in the Prediction League"""
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            guild_config["user_id_map"][player_id] = username
+            await ctx.send(f"Username for {player_id} has been updated to {username}.")
