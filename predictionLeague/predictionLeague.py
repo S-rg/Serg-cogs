@@ -267,7 +267,7 @@ class PredictionLeague(commands.Cog):
             if match is None:
                 match = guild_config['match_num']
             
-            match_key = str((round, match))
+            match_key = str((int(round), int(match)))
             await ctx.send(match_key)
             if match_key not in guild_config["matches"]:
                 return await ctx.send("No predictions found for this matchday.")
@@ -299,7 +299,7 @@ class PredictionLeague(commands.Cog):
             if match is None:
                 match = guild_config['match_num']
 
-            match_key = str((round, match))
+            match_key = str((int(round), int(match)))
             round_scores = guild_config["round_scores"].get(str(round), {})
             if not round_scores:
                 return await ctx.send("No scores available for this matchday.")
