@@ -82,6 +82,9 @@ class PredictionLeague(commands.Cog):
     def score(self, predictions, correct_predictions):
         """Calculates the score based on predictions and correct predictions"""
         score = 0
+
+        if predictions['cityscore'] is None or predictions['otherscore'] is None:
+            return score
         
         predicted_result = 'w' if predictions['cityscore'] > predictions['otherscore'] else 'l' if predictions['cityscore'] < predictions['otherscore'] else 't'
         correct_result = 'w' if correct_predictions['cityscore'] > correct_predictions['otherscore'] else 'l' if correct_predictions['cityscore'] < correct_predictions['otherscore'] else 't'
@@ -166,10 +169,6 @@ class PredictionLeague(commands.Cog):
                 
             guild_config['matches'][match_key]['predictions'][ctx.author.id] = predictions
 
-            if guild_config["debug_mode"]:
-                predictions_str = json.dumps(predictions, indent=2)
-                await ctx.send(box(predictions_str))
-
             await ctx.message.add_reaction("✅")
 
             try:
@@ -177,6 +176,9 @@ class PredictionLeague(commands.Cog):
                 await ctx.author.send(box(predictions_str))
             except Forbidden:
                 await ctx.send("I couldn't DM you — maybe you have DMs disabled?")
+
+            if predictions["cityscore"] is None or predictions["otherscore"] is None:
+                await ctx.send("Please include the scoreline for a valid prediction (or make sure you format it correctly).")
             
 
     @checks.admin_or_permissions(manage_channels = True)
@@ -252,6 +254,8 @@ class PredictionLeague(commands.Cog):
             config['matches'][match_key]['correct_predictions'] = predictions
 
             await ctx.message.add_reaction("✅")
+
+            await ctx.send(json.dumps(predictions, indent=2))
 
 
     @plset.command()
