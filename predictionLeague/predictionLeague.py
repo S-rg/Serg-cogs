@@ -268,6 +268,7 @@ class PredictionLeague(commands.Cog):
                 match = guild_config['match_num']
             
             match_key = str((round, match))
+            ctx.send(match_key)
             if match_key not in guild_config["matches"]:
                 return await ctx.send("No predictions found for this matchday.")
             
