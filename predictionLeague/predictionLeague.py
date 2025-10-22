@@ -390,7 +390,7 @@ class PredictionLeague(commands.Cog):
             rows = [("Player", "Score")] + leaderboard
             lines = []
 
-            widths = [20, 5]
+            widths = [30, 5]
 
             for row in rows:
                 cells = []
@@ -401,7 +401,9 @@ class PredictionLeague(commands.Cog):
                     cells.append(s.ljust(w))
                 lines.append("  ".join(cells))
 
+
             msg = "\n".join(lines)
+            msg = "Round {}:\n{}".format(round, msg)
 
             for page in pagify(msg, delims=["\n"], page_length=1900):
                 await ctx.send(box(page))
