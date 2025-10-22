@@ -357,6 +357,61 @@ class PredictionLeague(commands.Cog):
                 await ctx.send(box(page))
 
 
+    @plset.command()
+    async def round_leaderboard(self, ctx, round = None):
+        """Shows the Leaderboard for the Prediction League"""
+
+        async with self.config.guild(ctx.guild).all() as guild_config:
+            if round is None:
+                round = str(guild_config["round_num"])
+
+            round_scores = guild_config["round_scores"][round]
+
+            if not round_scores:
+                return await ctx.send(f"No scores available for round {round}.")
+            
+            leaderboard = []
+            for player_id, matches in round_scores.items():
+                total_score = sum(score for score in matches.values())
+                username = guild_config["user_id_map"].get(player_id)
+                if not username:
+                    try:
+                        user = await self.bot.fetch_user(player_id)
+                        username = user.display_name
+                        guild_config["user_id_map"][player_id] = username
+
+                    except NotFound:
+                        username = None
+
+                player_name = username if username else f"{player_id}"
+                leaderboard.append((player_name, total_score))
+
+            leaderboard.sort(key=lambda x: x[1], reverse=True)
+            rows = [("Player", "Score")] + leaderboard
+            lines = []
+
+            widths = [20, 5]
+
+            for row in rows:
+                cells = []
+                for cell, w in zip(row, widths):
+                    s = str(cell)
+                    if len(s) > w:
+                        s = s[: w - 1] + "…"
+                    cells.append(s.ljust(w))
+                lines.append("  ".join(cells))
+
+            msg = "\n".join(lines)
+
+            for page in pagify(msg, delims=["\n"], page_length=1900):
+                await ctx.send(box(page))
+
+            
+            
+
+
+
+
 
     @plset.command()
     async def open(self, ctx):
